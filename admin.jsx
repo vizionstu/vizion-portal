@@ -384,7 +384,7 @@
               <div className="vz-admin-bar-sub">{client.name}{!isAll && card.projectId ? ' · ' + card.projectId : ''} · {list.length} deliverable{list.length === 1 ? '' : 's'} · <Icon name="pin" size={11} style={{ display: 'inline', verticalAlign: '-1px' }} /> {pinnedCount} pinned</div>
             </div>
             <div className="vz-admin-bar-actions">
-              <button type="button" className="vz-btn ghost" onClick={() => openPortal(card.slug)}><Icon name="eye" size={15} />Preview</button>
+              <button type="button" className="vz-btn ghost" onClick={() => window.open('#/c/' + card.slug, '_blank')}><Icon name="eye" size={15} />Preview</button>
               <button type="button" className="vz-btn primary" onClick={() => setForm({})}><Icon name="plus" size={15} />Add deliverable</button>
             </div>
           </div>
@@ -581,7 +581,7 @@
         <SlugBar client={client} card={card} refresh={refresh} compact />
         <div className="vz-pcard-foot">
           <div className="vz-pcard-mini">
-            <button type="button" className="vz-iconbtn" title="Preview" onClick={() => openPortal(card.slug)}><Icon name="eye" size={15} /></button>
+            <button type="button" className="vz-iconbtn" title="Preview" onClick={() => window.open('#/c/' + card.slug, '_blank')}><Icon name="eye" size={15} /></button>
             <button type="button" className="vz-iconbtn" title="Duplicate" onClick={() => setConfirmAction('duplicate')}><Icon name="copy" size={15} /></button>
             <button type="button" className="vz-iconbtn danger" title={isPrimaryAll ? 'Delete all projects' : 'Delete'} onClick={() => setConfirmAction(isPrimaryAll ? 'deleteAll' : 'delete')}><Icon name="trash" size={15} /></button>
           </div>

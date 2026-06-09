@@ -781,4 +781,142 @@ html.vz-animate[data-anim="on"] .vz-side-projlist { animation: vzFormEnter .3s c
 
   /* --- buttons compact --- */
   .vz-btn.lg { font-size: 13.5px; padding: 12px 18px; }
+
+  /* ===========================================================
+     LANDING — mobile
+     =========================================================== */
+  .vz-landing-inner { width: min(1100px, 100vw); padding: 24px 18px 32px; gap: 28px; }
+  .vz-landing-title { font-size: clamp(36px, 11vw, 52px); margin: 20px 0 14px; }
+  .vz-landing-desc { font-size: 14px; margin-bottom: 20px; }
+  .vz-landing-meta { font-size: 10px; gap: 10px; flex-wrap: wrap; }
+  .vz-landing-meta i { width: 16px; }
+  .vz-gate { padding: 20px 16px; }
+  .vz-gate-title { font-size: 20px; margin: 6px 0 16px; }
+  .vz-gate-eyebrow { font-size: 9.5px; }
+  .vz-gate-field { flex-direction: column; gap: 8px; }
+  .vz-gate-field input { padding: 12px; font-size: 13.5px; }
+  .vz-gate-field .vz-btn { padding: 12px; justify-content: center; }
+  .vz-gate-demo { margin-top: 16px; padding-top: 14px; }
+  .vz-gate-demo > span { font-size: 9px; }
+  .vz-gate-chips { gap: 6px; margin-top: 10px; }
+  .vz-chip { padding: 7px 11px; font-size: 11.5px; }
+  .vz-admin-link { font-size: 12px; margin-top: 14px; gap: 7px; }
+  .vz-mark-name { font-size: calc(16px * var(--mk,1)) !important; }
+
+  /* ===========================================================
+     NOT FOUND / LOGIN — mobile
+     =========================================================== */
+  .vz-notfound { padding: 24px 18px; gap: 12px; }
+  .vz-notfound h1 { font-size: 22px; }
+  .vz-notfound p { font-size: 13.5px; }
+
+  /* ===========================================================
+     ADMIN — top bar mobile
+     =========================================================== */
+  .vz-admin-top { padding: 12px 14px; gap: 10px; flex-wrap: wrap; }
+  .vz-admin-brand { gap: 8px; }
+  .vz-admin-badge { font-size: 9px; padding: 3px 7px; }
+  .vz-admin-top-actions { display: flex; align-items: center; gap: 8px; }
+  .vz-admin-top-actions > span { display: none; }
+
+  /* --- admin canvas --- */
+  .vz-admin-canvas { padding: 16px 14px; }
+
+  /* --- console bar (AdminApp) --- */
+  .vz-console-bar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 18px; }
+  .vz-console-actions { flex-wrap: wrap; gap: 8px; }
+  .vz-console-actions .vz-btn { font-size: 12px; padding: 8px 12px; }
+  .vz-sort > span { font-size: 10px; }
+
+  /* --- client group --- */
+  .vz-cgroup { margin-bottom: 28px; }
+  .vz-cgroup-head { gap: 10px; margin-bottom: 12px; padding-bottom: 12px; flex-wrap: wrap; }
+  .vz-cgroup-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .vz-cgroup-name { font-size: 17px; }
+  .vz-cgroup-company { font-size: 11.5px; }
+
+  /* --- project card grid --- */
+  .vz-pcard-grid { grid-template-columns: 1fr; gap: 12px; }
+  .vz-pcard { padding: 14px; gap: 12px; }
+  .vz-pcard-name { font-size: 16px; }
+  .vz-pcard-pid { font-size: 10px; }
+  .vz-pcard-stats { gap: 14px; padding: 10px 0; }
+  .vz-pcard-stats b { font-size: 15px; }
+  .vz-pcard-stats span { font-size: 8.5px; }
+  .vz-pcard-foot .vz-btn { font-size: 11.5px; padding: 6px 10px; }
+
+  /* --- slug bar --- */
+  .vz-slugbar { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+  .vz-slugbar.compact { padding: 8px 10px; gap: 6px; }
+  .vz-slug-label { font-size: 10px; display: none; }
+  .vz-slug-code { font-size: 11px; min-width: 0; }
+  .vz-slugbar.compact .vz-slug-code { font-size: 10.5px; }
+  .vz-slug-actions { gap: 4px; }
+  .vz-slug-actions .vz-iconbtn { width: 28px; height: 28px; }
+
+  /* ===========================================================
+     MANAGE VIEW — mobile
+     =========================================================== */
+  .vz-admin-bar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 14px; }
+  .vz-admin-bar > .vz-btn { align-self: flex-start; }
+  .vz-admin-bar-name { font-size: 20px; }
+  .vz-admin-bar-sub { font-size: 11.5px; line-height: 1.4; }
+  .vz-admin-bar-actions { flex-wrap: wrap; gap: 8px; }
+  .vz-admin-bar-actions .vz-btn { font-size: 12px; padding: 9px 12px; flex: 1; justify-content: center; min-width: 0; }
+
+  /* --- deliverable rows --- */
+  .vz-adminrow { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+  .vz-adminrow-thumb { width: 100%; height: 120px; }
+  .vz-adminrow-thumb img { width: 100%; height: 100%; }
+  .vz-adminrow-title { font-size: 14.5px; white-space: normal; }
+  .vz-adminrow-detail { max-width: none; white-space: normal; font-size: 12px; }
+  .vz-adminrow-date { font-size: 10px; }
+  .vz-adminrow-meta { flex-wrap: wrap; gap: 6px; }
+  .vz-adminrow-actions { flex-direction: row; align-items: center; gap: 6px; justify-content: flex-start; }
+  .vz-adminrow-actions-row { gap: 4px; }
+
+  /* --- entry form on mobile --- */
+  .vz-form { padding: 18px 14px; }
+  .vz-form-head h3 { font-size: 16px; }
+  .vz-form-sub { font-size: 12.5px; }
+  .vz-form-grid { gap: 20px; }
+  .vz-form-actions { flex-wrap: wrap; gap: 8px; }
+  .vz-form-actions .vz-btn { flex: 1; justify-content: center; min-width: 0; }
+  .vz-typechoose { grid-template-columns: 1fr; gap: 10px; }
+  .vz-typecard { padding: 16px; }
+  .vz-typecard-t { font-size: 15px; margin: 10px 0 4px; }
+  .vz-typecard-d { font-size: 12px; }
+  .vz-row-2 { grid-template-columns: 1fr 90px; gap: 10px; }
+  .vz-idpreview { font-size: 11.5px; }
+
+  /* --- client grid (manage clients in admin) --- */
+  .vz-client-grid { grid-template-columns: 1fr; }
+
+  /* ===========================================================
+     MODALS — mobile
+     =========================================================== */
+  .vz-modal { width: min(560px, 100vw); border-radius: 0; max-height: 100vh; }
+  .vz-modal.wide { width: 100vw; }
+  .vz-modal-overlay { padding: 0; align-items: flex-end; }
+  .vz-modal-head { padding: 16px; }
+  .vz-modal-head h3 { font-size: 17px; }
+  .vz-modal-body { padding: 16px; }
+  .vz-mc-head { flex-direction: column; align-items: stretch; gap: 10px; }
+  .vz-mc-head span { font-size: 11.5px; }
+  .vz-mc-row { padding: 10px; gap: 8px; flex-wrap: wrap; }
+  .vz-mc-name { font-size: 14px; }
+  .vz-mc-sub { font-size: 10.5px; }
+  .vz-mc-reorder .vz-iconbtn { width: 24px; height: 20px; }
+  .vz-unpin-item { padding: 10px; gap: 10px; }
+  .vz-unpin-name { font-size: 13px; }
+  .vz-unpin-meta { font-size: 10.5px; gap: 6px; }
+
+  /* --- share strip --- */
+  .vz-share-strip { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+  .vz-share-label { font-size: 10px; }
+  .vz-share-url { font-size: 11px; word-break: break-all; }
+
+  /* --- toasts mobile --- */
+  .vz-toasts { bottom: 16px; left: 12px; right: 12px; transform: none; }
+  .vz-toast { font-size: 12.5px; padding: 10px 14px; }
 }
