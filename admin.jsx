@@ -384,7 +384,7 @@
               <div className="vz-admin-bar-sub">{client.name}{!isAll && card.projectId ? ' · ' + card.projectId : ''} · {list.length} deliverable{list.length === 1 ? '' : 's'} · <Icon name="pin" size={11} style={{ display: 'inline', verticalAlign: '-1px' }} /> {pinnedCount} pinned</div>
             </div>
             <div className="vz-admin-bar-actions">
-              <button type="button" className="vz-btn ghost" onClick={() => openPortal(card.slug)}><Icon name="eye" size={15} />Preview</button>
+              <button type="button" className="vz-btn ghost" onClick={() => window.open('#/c/' + card.slug, '_blank')}><Icon name="eye" size={15} />Preview</button>
               <button type="button" className="vz-btn primary" onClick={() => setForm({})}><Icon name="plus" size={15} />Add deliverable</button>
             </div>
           </div>
@@ -534,19 +534,40 @@
   }
 
   /* ---------- Project card (console) ---------- */
+  /* ---------- Typed Confirm Modal ---------- */
+  function TypedConfirm({ title, message, confirmPhrase, confirmLabel, danger, onConfirm, onCancel }) {
+    const [val, setVal] = useState('');
+    const ok = val.trim().toLowerCase() === confirmPhrase.toLowerCase();
+    return (
+      <Modal title={title} onClose={onCancel}>
+        <p style={{ margin: '0 0 14px', fontSize: '13.5px', color: 'var(--ink-2)', lineHeight: 1.55 }}>{message}</p>
+        <Field label={<>Type <b>{confirmPhrase}</b> to confirm</>}>
+          <input className="vz-input" autoFocus value={val} onChange={(e) => setVal(e.target.value)} placeholder={confirmPhrase} onKeyDown={(e) => e.key === 'Enter' && ok && onConfirm()} />
+        </Field>
+        <div className="vz-form-actions" style={{ marginTop: 16, paddingTop: 14 }}>
+          <button type="button" className="vz-btn ghost" onClick={onCancel}>Cancel</button>
+          <button type="button" className={cx('vz-btn', ok ? (danger ? 'danger-solid' : 'primary') : 'ghost')} disabled={!ok} onClick={onConfirm}>
+            <Icon name={danger ? 'trash' : 'check'} size={14} />{confirmLabel}
+          </button>
+        </div>
+      </Modal>
+    );
+  }
+
   function ProjectCard({ client, card, navigate, openPortal, refresh }) {
     const toast = useToast();
     const [confirmAction, setConfirmAction] = useState(null);
     const isAll = card.kind === 'all';
+    const isPrimaryAll = isAll && !card.isBackup;
     const counts = VZ.cardCounts(client, card);
     const updated = VZ.cardUpdatedAt(client, card);
-    const canDelete = !(isAll && !card.isBackup);
     const cardLabel = isAll ? 'All Projects' : card.name;
+    const normalCount = client.projects.filter((p) => p.kind === 'normal').length;
     return (
       <div className={cx('vz-pcard', isAll && 'all', card.isBackup && 'backup')}>
         <div className="vz-pcard-top" onClick={() => navigate('#/admin/manage/' + card.id)}>
           <div className="vz-pcard-badges">
-            {isAll && !card.isBackup && <span className="vz-pill all-pill"><Icon name="layers" size={11} />All Projects</span>}
+            {isPrimaryAll && <span className="vz-pill all-pill"><Icon name="layers" size={11} />All Projects</span>}
             {card.isBackup && <span className="vz-pill backup-pill">Backup</span>}
             {!isAll && <span className="vz-pcard-pid">{card.projectId}</span>}
           </div>
@@ -560,9 +581,9 @@
         <SlugBar client={client} card={card} refresh={refresh} compact />
         <div className="vz-pcard-foot">
           <div className="vz-pcard-mini">
-            <button type="button" className="vz-iconbtn" title="Preview" onClick={() => openPortal(card.slug)}><Icon name="eye" size={15} /></button>
+            <button type="button" className="vz-iconbtn" title="Preview" onClick={() => window.open('#/c/' + card.slug, '_blank')}><Icon name="eye" size={15} /></button>
             <button type="button" className="vz-iconbtn" title="Duplicate" onClick={() => setConfirmAction('duplicate')}><Icon name="copy" size={15} /></button>
-            {canDelete && <button type="button" className="vz-iconbtn danger" title="Delete" onClick={() => setConfirmAction('delete')}><Icon name="trash" size={15} /></button>}
+            <button type="button" className="vz-iconbtn danger" title={isPrimaryAll ? 'Delete all projects' : 'Delete'} onClick={() => setConfirmAction(isPrimaryAll ? 'deleteAll' : 'delete')}><Icon name="trash" size={15} /></button>
           </div>
           <button type="button" className="vz-btn ghost sm" onClick={() => navigate('#/admin/manage/' + card.id)}>Manage<Icon name="arrow" size={13} /></button>
         </div>
@@ -570,20 +591,34 @@
           <ConfirmAction title="Duplicate Card?" message={'Duplicate "' + cardLabel + '"?' + (isAll ? ' A new All-Projects link will be created.' : ' A copy of this project card will be created.')} confirmLabel="Duplicate" onConfirm={() => { VZ.duplicateProject(client.id, card.id); toast(isAll ? 'New All-Projects link created' : 'Project duplicated'); setConfirmAction(null); refresh(); }} onCancel={() => setConfirmAction(null)} />
         )}
         {confirmAction === 'delete' && (
-          <ConfirmAction title="Delete Card?" message={'Delete "' + cardLabel + '"? Deliverables themselves are not removed.'} confirmLabel="Delete" danger onConfirm={() => { VZ.deleteProject(client.id, card.id); toast('Card deleted'); setConfirmAction(null); refresh(); }} onCancel={() => setConfirmAction(null)} />
+          <TypedConfirm title="Delete Project?" message={'Delete "' + cardLabel + '"? Deliverables themselves are not removed.'} confirmPhrase="delete" confirmLabel="Delete project" danger onConfirm={() => { VZ.deleteProject(client.id, card.id); toast('Project deleted'); setConfirmAction(null); refresh(); }} onCancel={() => setConfirmAction(null)} />
+        )}
+        {confirmAction === 'deleteAll' && (
+          <TypedConfirm title="Delete All Projects?" message={'This will permanently delete all ' + normalCount + ' project(s) and all deliverables for "' + client.name + '". This cannot be undone.'} confirmPhrase="delete all projects" confirmLabel="Delete all projects" danger onConfirm={() => { const n = VZ.deleteAllProjects(client.id); toast(n + ' project(s) deleted'); setConfirmAction(null); refresh(); }} onCancel={() => setConfirmAction(null)} />
         )}
       </div>
     );
   }
 
+  /* ---------- sort persistence ---------- */
+  const SORT_KEY = 'vz-admin-sort';
+  function loadSort() {
+    try { const s = JSON.parse(localStorage.getItem(SORT_KEY)); if (s && s.field) return s; } catch {}
+    return { field: 'updated', dir: 'desc' };
+  }
+  function saveSort(field, dir) {
+    try { localStorage.setItem(SORT_KEY, JSON.stringify({ field, dir })); } catch {}
+  }
+
   /* ---------- ordered cards for a client ---------- */
-  function orderedCards(client, sort) {
+  function orderedCards(client, sort, dir) {
     const primary = client.projects.filter((p) => p.kind === 'all' && !p.isBackup);
     const backups = client.projects.filter((p) => p.kind === 'all' && p.isBackup);
     let normals = client.projects.filter((p) => p.kind === 'normal');
-    if (sort === 'projectId') normals = normals.slice().sort((a, b) => (a.projectId || '').localeCompare(b.projectId || ''));
-    else if (sort === 'created') normals = normals.slice().sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
-    else normals = normals.slice().sort((a, b) => +new Date(VZ.cardUpdatedAt(client, b)) - +new Date(VZ.cardUpdatedAt(client, a)));
+    const flip = dir === 'asc' ? -1 : 1;
+    if (sort === 'projectId') normals = normals.slice().sort((a, b) => flip * (a.projectId || '').localeCompare(b.projectId || ''));
+    else if (sort === 'created') normals = normals.slice().sort((a, b) => flip * (+new Date(b.createdAt) - +new Date(a.createdAt)));
+    else normals = normals.slice().sort((a, b) => flip * (+new Date(VZ.cardUpdatedAt(client, b)) - +new Date(VZ.cardUpdatedAt(client, a))));
     return [...primary, ...backups, ...normals];
   }
 
@@ -592,7 +627,11 @@
     const [, force] = useState(0);
     const refresh = () => force((n) => n + 1);
     useEffect(() => VZ.subscribe(refresh), []);
-    const [sort, setSort] = useState('updated');
+    const [sortState, setSortState] = useState(loadSort);
+    const sort = sortState.field;
+    const sortDir = sortState.dir;
+    const setSort = (field) => { setSortState((s) => { const n = { ...s, field }; saveSort(n.field, n.dir); return n; }); };
+    const toggleDir = () => { setSortState((s) => { const d = s.dir === 'desc' ? 'asc' : 'desc'; saveSort(s.field, d); return { ...s, dir: d }; }); };
     const [newProject, setNewProject] = useState(false);
     const [manageClients, setManageClients] = useState(false);
     const clients = VZ.listClients();
@@ -618,6 +657,9 @@
                 <select className="vz-input sm" value={sort} onChange={(e) => setSort(e.target.value)}>
                   <option value="updated">Updated</option><option value="created">Created</option><option value="projectId">Project ID</option>
                 </select>
+                <button type="button" className="vz-iconbtn" onClick={toggleDir} title={sortDir === 'desc' ? 'Descending (newest first)' : 'Ascending (oldest first)'}>
+                  <Icon name={sortDir === 'desc' ? 'down' : 'up'} size={15} />
+                </button>
               </div>
               <button type="button" className="vz-btn ghost" onClick={() => setManageClients(true)}><Icon name="user" size={15} />Manage Clients</button>
               <button type="button" className="vz-btn primary" onClick={() => setNewProject(true)}><Icon name="plus" size={15} />New Project</button>
@@ -636,7 +678,7 @@
                 <button type="button" className="vz-btn ghost sm" onClick={() => { setNewProject(true); }}><Icon name="plus" size={13} />Project</button>
               </div>
               <div className="vz-pcard-grid">
-                {orderedCards(c, sort).map((card) => <ProjectCard key={card.id} client={c} card={card} navigate={navigate} openPortal={openPortal} refresh={refresh} />)}
+                {orderedCards(c, sort, sortDir).map((card) => <ProjectCard key={card.id} client={c} card={card} navigate={navigate} openPortal={openPortal} refresh={refresh} />)}
               </div>
             </section>
           ))}

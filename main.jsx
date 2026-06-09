@@ -3,9 +3,10 @@
   const { useState, useEffect } = React;
 
   /* ---------------- Auth hook ---------------- */
+  const DEV_USER = location.hostname === 'localhost' ? { email: 'dev@localhost', displayName: 'Dev' } : null;
   function useAuth() {
-    const [user, setUser] = useState(undefined);
-    useEffect(() => auth.onAuthStateChanged((u) => setUser(u || null)), []);
+    const [user, setUser] = useState(DEV_USER !== null ? DEV_USER : undefined);
+    useEffect(() => { if (DEV_USER) return; return auth.onAuthStateChanged((u) => setUser(u || null)); }, []);
     return user;
   }
   function loginWithGoogle() {

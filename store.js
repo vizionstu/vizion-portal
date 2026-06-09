@@ -154,6 +154,13 @@
     if (!p || (p.kind === 'all' && !p.isBackup)) return;
     c.projects = c.projects.filter((x) => x.id !== projId); save(d);
   }
+  function deleteAllProjects(clientId) {
+    const d = getData(); const c = d.clients.find((x) => x.id === clientId); if (!c) return 0;
+    const count = c.projects.filter((p) => p.kind === 'normal').length;
+    c.projects = c.projects.filter((p) => p.kind !== 'normal');
+    c.deliverables = [];
+    save(d); return count;
+  }
   function duplicateProject(clientId, projId) {
     const d = getData(); const c = d.clients.find((x) => x.id === clientId); if (!c) return;
     const p = c.projects.find((x) => x.id === projId); if (!p) return;
@@ -313,7 +320,7 @@
     init, isReady: () => _ready,
     getData, subscribe, nowISO, uid, randomSlug, slugify,
     listClients, getClientById, addClient, updateClient, moveClient, deleteClient,
-    addProject, updateProject, deleteProject, duplicateProject, shuffleSlug, resetSlug,
+    addProject, updateProject, deleteProject, deleteAllProjects, duplicateProject, shuffleSlug, resetSlug,
     getCardBySlug, deliverablesForCard, cardUpdatedAt, cardCounts, projectOptions,
     addDeliverable, updateDeliverable, deleteDeliverable, duplicateDeliverable, moveDeliverable,
     togglePin, unpinDeliverables, getPinnedOlderThan,
