@@ -53,11 +53,11 @@ input, textarea, select, button { font-family: inherit; }
 /* ---------- wordmark ---------- */
 .vz-mark { display: flex; align-items: center; gap: calc(10px * var(--mk, 1)); }
 .vz-mark-logo {
-  width: calc(38px * var(--mk,1)); height: calc(38px * var(--mk,1));
+  width: calc(28px * var(--mk,1)); height: calc(28px * var(--mk,1));
   flex: none; object-fit: contain;
 }
 .vz-side .vz-mark { align-items: flex-start; }
-.vz-side .vz-mark-logo { width: auto; height: calc(55px * var(--mk,1)); margin-top: -6px; }
+.vz-side .vz-mark-logo { width: auto; height: calc(38px * var(--mk,1)); margin-top: 2px; }
 .vz-mark-name {
   font-family: var(--font-display);
   font-weight: 800; letter-spacing: .14em;
