@@ -187,7 +187,12 @@
 
   function Sidebar({ client, card, filter, setFilter, counts, query, setQuery, focusedProjectId, onFocusProject }) {
     const isAll = card.kind === 'all';
-    const normalProjects = isAll ? client.projects.filter((p) => p.kind === 'normal') : [];
+    const normalProjects = isAll ? client.projects.filter((p) => p.kind === 'normal').slice().sort((a, b) => {
+      const na = parseInt((a.projectId || '').replace(/\D/g, ''), 10) || 0;
+      const nb = parseInt((b.projectId || '').replace(/\D/g, ''), 10) || 0;
+      if (na !== nb) return nb - na;
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
+    }) : [];
     return (
       <aside className="vz-side">
         <div className="vz-side-top"><Wordmark /></div>
@@ -204,6 +209,14 @@
             </button>
           ))}
         </nav>
+        {isAll && normalProjects.length > 0 && (
+          <div className="vz-side-projdrop">
+            <select value={focusedProjectId || ''} onChange={(e) => onFocusProject(e.target.value || null)}>
+              <option value="">All Projects (Recent)</option>
+              {normalProjects.map((p) => <option key={p.id} value={p.projectId}>{p.name} — {p.projectId}</option>)}
+            </select>
+          </div>
+        )}
         <div className="vz-side-search">
           <Icon name="search" size={14} />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search deliverables" />
@@ -211,7 +224,7 @@
         {isAll && normalProjects.length > 0 && (
           <div className="vz-side-projlist">
             <button type="button" className={cx('vz-side-projlist-recent', !focusedProjectId && 'active')} onClick={() => onFocusProject(null)}>
-              <Icon name="clock" size={14} /><span>Recent</span>
+              <Icon name="clock" size={14} /><span>All Projects (Recent)</span>
             </button>
             <div className="vz-side-projlist-items">
               {normalProjects.map((p) => (
