@@ -65,13 +65,13 @@ function Icon({ name, size = 16, stroke = 1.6, style }) {
 /* ---------- VIZION STUDIO wordmark ---------- */
 function Wordmark({ size = 1, light = false }) {
   return (
-    <div className="vz-mark" style={{ '--mk': size }}>
+    <a href="https://vizionstu.com/" target="_blank" rel="noopener noreferrer" className="vz-mark" style={{ '--mk': size, textDecoration: 'none', color: 'inherit' }}>
       <img src="logo.png" alt="VIZION STUDIO" className="vz-mark-logo" aria-hidden="true" />
       <div className="vz-mark-text">
         <div className="vz-mark-name">VIZION <span className="vz-mark-studio">STUDIO</span></div>
         <div className="vz-mark-sub">3D Architectural Visualization</div>
       </div>
-    </div>
+    </a>
   );
 }
 
