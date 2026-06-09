@@ -187,6 +187,13 @@
     const base = p.kind === 'all' ? slugify(c.name + '-all-projects') : slugify(p.name || p.projectId);
     p.slug = uniqueSlug(base, d, p.id); save(d); return p.slug;
   }
+  function updateSlug(clientId, projId, raw) {
+    const d = getData(); const c = d.clients.find((x) => x.id === clientId); if (!c) return;
+    const p = c.projects.find((x) => x.id === projId); if (!p) return;
+    const base = slugify(raw);
+    if (!base) return null;
+    p.slug = uniqueSlug(base, d, p.id); save(d); return p.slug;
+  }
 
   /* ---------- card resolution + queries ---------- */
   function getCardBySlug(slug) {
@@ -320,7 +327,7 @@
     init, isReady: () => _ready,
     getData, subscribe, nowISO, uid, randomSlug, slugify,
     listClients, getClientById, addClient, updateClient, moveClient, deleteClient,
-    addProject, updateProject, deleteProject, deleteAllProjects, duplicateProject, shuffleSlug, resetSlug,
+    addProject, updateProject, deleteProject, deleteAllProjects, duplicateProject, shuffleSlug, resetSlug, updateSlug,
     getCardBySlug, deliverablesForCard, cardUpdatedAt, cardCounts, projectOptions,
     addDeliverable, updateDeliverable, deleteDeliverable, duplicateDeliverable, moveDeliverable,
     togglePin, unpinDeliverables, getPinnedOlderThan,

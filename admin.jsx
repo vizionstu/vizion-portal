@@ -306,23 +306,61 @@
   /* ---------- Slug bar ---------- */
   function SlugBar({ client, card, refresh, compact }) {
     const toast = useToast();
+    const [editing, setEditing] = useState(false);
+    const [draft, setDraft] = useState('');
     const [showConfirm, setShowConfirm] = useState(false);
     const [confirmVal, setConfirmVal] = useState('');
     const confirmOk = confirmVal.trim().toLowerCase() === 'random';
+    const inputRef = useRef(null);
+
+    const startEdit = () => { setDraft(card.slug); setEditing(true); };
+    const cancelEdit = () => { setEditing(false); setDraft(''); };
+    const saveEdit = () => {
+      const trimmed = draft.trim();
+      if (!trimmed || trimmed === card.slug) { cancelEdit(); return; }
+      const result = VZ.updateSlug(client.id, card.id, trimmed);
+      if (result) { toast('Slug updated'); refresh(); }
+      else toast('Invalid slug', 'error');
+      setEditing(false); setDraft('');
+    };
+    const resetToName = () => {
+      const result = VZ.resetSlug(client.id, card.id);
+      if (result) { setDraft(result); toast('Reset to name'); }
+    };
     const doShuffle = () => {
       VZ.shuffleSlug(client.id, card.id); toast('New random slug'); refresh();
-      setShowConfirm(false); setConfirmVal('');
+      setShowConfirm(false); setConfirmVal(''); setEditing(false); setDraft('');
     };
+
+    useEffect(() => { if (editing && inputRef.current) inputRef.current.focus(); }, [editing]);
+
     return (
       <>
         <div className={cx('vz-slugbar', compact && 'compact')}>
           <Icon name="link" size={14} />
           {!compact && <span className="vz-slug-label">Client link</span>}
-          <code className="vz-slug-code">#/c/{card.slug}</code>
+          {editing ? (
+            <div className="vz-slug-edit">
+              <span className="vz-slug-prefix">#/c/</span>
+              <input ref={inputRef} className="vz-slug-input" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }} />
+            </div>
+          ) : (
+            <code className="vz-slug-code">#/c/{card.slug}</code>
+          )}
           <div className="vz-slug-actions">
-            <button type="button" className="vz-iconbtn" title="Randomise slug" onClick={() => { setShowConfirm(true); setConfirmVal(''); }}><Icon name="settings" size={14} /></button>
-            <button type="button" className="vz-iconbtn" title="Reset slug to name" onClick={() => { VZ.resetSlug(client.id, card.id); toast('Slug reset to name'); refresh(); }}><Icon name="back" size={14} /></button>
-            <CopyButton text={shareUrlFor(card.slug)} label="" small className="iconish" />
+            {editing ? (
+              <>
+                <button type="button" className="vz-iconbtn" title="Save" onClick={saveEdit}><Icon name="check" size={14} /></button>
+                <button type="button" className="vz-iconbtn" title="Reset to name" onClick={resetToName}><Icon name="back" size={14} /></button>
+                <button type="button" className="vz-iconbtn" title="Randomise slug" onClick={() => { setShowConfirm(true); setConfirmVal(''); }}><Icon name="settings" size={14} /></button>
+                <button type="button" className="vz-iconbtn" title="Cancel" onClick={cancelEdit}><Icon name="x" size={14} /></button>
+              </>
+            ) : (
+              <>
+                <button type="button" className="vz-iconbtn" title="Edit slug" onClick={startEdit}><Icon name="edit" size={14} /></button>
+                <CopyButton text={shareUrlFor(card.slug)} label="" small className="iconish" />
+              </>
+            )}
           </div>
         </div>
         {showConfirm && (

@@ -62,15 +62,13 @@ function Icon({ name, size = 16, stroke = 1.6, style }) {
   return <svg {...common}>{paths[name] || null}</svg>;
 }
 
-/* ---------- VIZION wordmark ---------- */
+/* ---------- VIZION STUDIO wordmark ---------- */
 function Wordmark({ size = 1, light = false }) {
   return (
     <div className="vz-mark" style={{ '--mk': size }}>
-      <div className="vz-mark-glyph" aria-hidden="true">
-        <span className="vz-tri" />
-      </div>
+      <img src="logo.png" alt="VIZION STUDIO" className="vz-mark-logo" aria-hidden="true" />
       <div className="vz-mark-text">
-        <div className="vz-mark-name">VIZION</div>
+        <div className="vz-mark-name">VIZION <span className="vz-mark-studio">STUDIO</span></div>
         <div className="vz-mark-sub">3D Architectural Visualization</div>
       </div>
     </div>
